@@ -29,6 +29,9 @@ class Game:
         """ Play the background music """
         self.bgm.play()
 
+
+
+
     def run(self):
         """ Run the game loop """
         self.bgm_on()

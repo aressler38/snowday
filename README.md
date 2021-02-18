@@ -12,7 +12,8 @@ https://python-poetry.org/docs/#installation
 
 # Run the game
 
-* After you install poetry, you can open a shell in this directory and execute `poetry run python snowday/main.py`.
+1. After installing poetry to the system, cd to this directory and run `poetry install`.
+1. **Run the game** `poetry run python snowday/main.py`.
 
 
 # Pygame
