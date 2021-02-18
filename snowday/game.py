@@ -1,14 +1,14 @@
 """
 This is the game class
 """
-
+import sys
 import pygame
 from snowday.bgm import Bgm
 
 DISPLAYSURF = pygame.display.set_mode((400, 300))
 
-FramePerSec = pygame.time.Clock()
 
+FramePerSec = pygame.time.Clock()
 
 class Game:
     HEIGHT = 450
@@ -28,4 +28,22 @@ class Game:
     def bgm_on(self):
         """ Play the background music """
         self.bgm.play()
+
+    def run(self):
+        """ Run the game loop """
+        self.bgm_on()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print('Quitting')
+                    pygame.quit()
+                    sys.exit()
+
+            self.displaysurface.fill((0,0,0))
+
+            #for entity in all_sprites:
+            #    self.displaysurface.blit(entity.surf, entity.rect)
+
+            pygame.display.update()
+            FramePerSec.tick(Game.FPS)
 
