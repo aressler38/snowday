@@ -8,7 +8,7 @@ import os
 
 class Bgm():
 
-    DEFAULT=os.path.join(os.path.dirname(__file__), 'midi/bwv-894.mid')
+    DEFAULT=os.path.join(os.path.dirname(__file__), 'assets/midi/bwv-894.mid')
 
     def __init__(self):
         # mixer config
