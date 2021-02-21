@@ -60,7 +60,7 @@ class Game:
         snowflake = Snowflake()
         snowflakes.add(snowflake)
 
-        potato_gun = PotatoGun()
+        potato_gun = PotatoGun((Game.WIDTH / 2, Game.HEIGHT))
 
         while True:
             for event in pygame.event.get():
@@ -86,8 +86,7 @@ class Game:
             self.displaysurface.blit(platform.image, platform.rect)
 
             angle = self.get_gun_angle()
-            potato_gun.rotate(angle)
-            potato_gun.rect.center = (Game.WIDTH / 2, Game.HEIGHT)
+            potato_gun.rotate(angle, (Game.WIDTH / 2, Game.HEIGHT))
             potato_gun.rect.y -= potato_gun.rect.height / 2
             self.displaysurface.blit(potato_gun.image, potato_gun.rect)
 
