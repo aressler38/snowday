@@ -2,7 +2,7 @@
 
 This is a game where you shoot snowflakes with a potato gun.
 
-![Screenshot](./screen.png?v=1)
+<img src="./screen.png?v=1" width="240" alt="screenshot">
 
 # Run the game
 
