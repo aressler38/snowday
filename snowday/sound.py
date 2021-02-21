@@ -19,3 +19,11 @@ class Sound:
     SHOOT_SFX = pygame.mixer.Sound(
         pkg_resources.resource_filename("snowday", "assets/sfx/sfx1.mp3")
     )
+    SHOOT_SFX.set_volume(0.7)
+    HIT_SFX = pygame.mixer.Sound(
+        pkg_resources.resource_filename("snowday", "assets/sfx/sfx2.mp3")
+    )
+    MELT_SFX = pygame.mixer.Sound(
+        pkg_resources.resource_filename("snowday", "assets/sfx/sfx3.mp3")
+    )
+    MELT_SFX.set_volume(0.4)

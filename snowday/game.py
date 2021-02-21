@@ -9,6 +9,7 @@ from pygame.math import Vector2
 import pygame.sprite
 import pygame.mouse
 import pygame.font
+from snowday.sound import Sound
 from snowday.bgm import Bgm
 from snowday.sprites.snowflake import Snowflake
 from snowday.sprites.potato_gun import PotatoGun
@@ -36,6 +37,10 @@ class Game:
             "hits": 0,
             "melts": 0,
         }
+        # Keep scores on a score board.
+        self.scoreboard = pygame.Surface((300, 100))
+        self.scoreboard_rect = pygame.Rect(Game.WIDTH / 2, 0, Game.WIDTH / 2, 50)
+        self.myfont = pygame.font.SysFont("Console", 28)
 
     def get_gun_angle(self):
         """
@@ -46,6 +51,35 @@ class Game:
         x = vec2[0] - Game.WIDTH / 2
         angle = int(math.atan2(y, x) * 180 / math.pi) - 90
         return angle
+
+    def render_scoreboard(self):
+        """ show the score and level """
+        self.scoreboard.fill((55, 55, 55))
+        self.displaysurface.blit(self.scoreboard, self.scoreboard_rect)
+        self.displaysurface.blit(
+            self.myfont.render(
+                "Hits: %s" % self.score["hits"],
+                True,
+                "green",
+            ),
+            (self.scoreboard_rect.left, self.scoreboard_rect.top + 0),
+        )
+        self.displaysurface.blit(
+            self.myfont.render(
+                "Melts: %s" % self.score["melts"],
+                True,
+                "red",
+            ),
+            (self.scoreboard_rect.left, self.scoreboard_rect.top + 30),
+        )
+        self.displaysurface.blit(
+            self.myfont.render(
+                "Level: %s" % self.level,
+                True,
+                "orange",
+            ),
+            (self.scoreboard_rect.left, self.scoreboard_rect.top + 60),
+        )
 
     def run(self):
         """ Run the game loop """
@@ -65,11 +99,8 @@ class Game:
         # Keep track of when the player finishes clicking a mouse button.
         click_start = False
 
-        # Keep scores on a score board.
-        scoreboard = pygame.Surface((300, 50))
-        scoreboard_rect = pygame.Rect(Game.WIDTH / 2, 0, Game.WIDTH / 2, 50)
-
-        myfont = pygame.font.SysFont("Console", 20)
+        # Record the time since last levelup.
+        last_levelup = 0
 
         while True:
             for event in pygame.event.get():
@@ -78,35 +109,25 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
+            # Get the current time.
+            now = pygame.time.get_ticks()
+
+            # See if it's time to levelup yet.
+            if now - last_levelup > 15000 * self.level:
+                self.level += 1
+                last_levelup = now
+
             # Draw a black background.
             self.displaysurface.fill((0, 0, 0))
             # Draw the ground.
             self.displaysurface.blit(platform.image, platform.rect)
 
             # Draw the scoreboard
-            scoreboard.fill((55, 55, 55))
-            self.displaysurface.blit(scoreboard, scoreboard_rect)
-            self.displaysurface.blit(
-                myfont.render(
-                    "Hits: %s" % self.score["hits"],
-                    True,
-                    "Orange",
-                ),
-                (scoreboard_rect.left, scoreboard_rect.top + 0),
-            )
-            self.displaysurface.blit(
-                myfont.render(
-                    "Melts: %s" % self.score["melts"],
-                    True,
-                    "Orange",
-                ),
-                (scoreboard_rect.left, scoreboard_rect.top + 30),
-            )
+            self.render_scoreboard()
 
             # Spawn snowflakes.
-            now = pygame.time.get_ticks()
-            if now - self.last_spawn_time > Game.SNOWFLAKE_FACTOR:
-                snowflakes.add(Snowflake())
+            if now - self.last_spawn_time > (Game.SNOWFLAKE_FACTOR / self.level):
+                snowflakes.add(Snowflake(self.displaysurface))
                 self.last_spawn_time = now
 
             # Update the snowflakes sprite group causing them to fall.
@@ -115,7 +136,8 @@ class Game:
             for snowflake in pygame.sprite.spritecollide(platform, snowflakes, True):
                 print("melt")
                 self.score["melts"] += 1
-                snowflake = Snowflake()
+                snowflake = Snowflake(self.displaysurface)
+                Sound.MELT_SFX.play()
                 snowflakes.add(snowflake)
             # Draw the snowflakes that didn't hit the ground.
             snowflakes.draw(self.displaysurface)
@@ -133,7 +155,8 @@ class Game:
                     click_start = True
                     break
                 if click_start:
-                    potato_gun.shoot_potato()
+                    # You can change the speed here
+                    potato_gun.shoot_potato(potato_gun.potato_speed)
                     click_start = False
 
             # Show the potatoes flying!
@@ -147,6 +170,7 @@ class Game:
                 for snowflake in pygame.sprite.spritecollide(potato, snowflakes, True):
                     print("shot that snowflake!")
                     self.score["hits"] += 1
+                    Sound.HIT_SFX.play()
 
             # Update the display and clock.
             pygame.display.update()

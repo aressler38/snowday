@@ -19,6 +19,8 @@ class Potato(pygame.sprite.Sprite):
     # Make the potato sprite about 15x15 pixels.
     POTATO = pygame.transform.scale(pygame.image.load(POTATO_IMAGE_PATH), (15, 15))
 
+    MAX_LIFE = 5000  # No potato should last longer than 5 seconds.
+
     def __init__(self, direction: Vector2, start: Vector2, speed=1.0):
         super().__init__()
         self.direction = direction.normalize()
@@ -37,3 +39,5 @@ class Potato(pygame.sprite.Sprite):
         self.rect.center = (time_delta * self.speed * self.direction) + Vector2(
             self.rect.center
         )
+        if now - self.bday > Potato.MAX_LIFE:
+            self.kill()

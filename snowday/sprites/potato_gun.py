@@ -23,7 +23,7 @@ class PotatoGun(pygame.sprite.Sprite):
 
         # We put potato sprites in a group so we can detect collisions.
         self.potatoes = pygame.sprite.Group()
-        self.potato_speed = 0.0125
+        self.potato_speed = 0.03875
 
         self.pivot = pivot
         self.original = pygame.transform.scale(
@@ -65,11 +65,12 @@ class PotatoGun(pygame.sprite.Sprite):
         self.image = rotated_image
         self.update_muzzle()
 
-    def shoot_potato(self):
+    def shoot_potato(self, speed: float = None):
         """
         Fire!!!
         """
-        potato = Potato(self.direction, self.muzzle, self.potato_speed)
+        if speed is None:
+            speed = self.potato_speed
+        potato = Potato(self.direction, self.muzzle, speed)
         self.potatoes.add(potato)
         Sound.SHOOT_SFX.play()
-        print("potato")
