@@ -13,6 +13,7 @@ from snowday.sound import Sound
 from snowday.bgm import Bgm
 from snowday.sprites.snowflake import Snowflake
 from snowday.sprites.potato_gun import PotatoGun
+from snowday.sprites.crosshair import Crosshair
 
 
 class Game:
@@ -41,6 +42,8 @@ class Game:
         self.scoreboard = pygame.Surface((300, 100))
         self.scoreboard_rect = pygame.Rect(Game.WIDTH / 2, 0, Game.WIDTH / 2, 50)
         self.myfont = pygame.font.SysFont("Console", 28)
+        # Use a custom cursor image for more action.
+        self.cursor = Crosshair()
 
     def get_gun_angle(self):
         """
@@ -102,6 +105,9 @@ class Game:
         # Record the time since last levelup.
         last_levelup = 0
 
+        # Setup mouse cursor
+        pygame.mouse.set_visible(False)
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -119,6 +125,11 @@ class Game:
 
             # Draw a black background.
             self.displaysurface.fill((0, 0, 0))
+
+            # Update cursor position.
+            self.cursor.rect.center = pygame.mouse.get_pos()
+            self.displaysurface.blit(self.cursor.image, self.cursor.rect)
+
             # Draw the ground.
             self.displaysurface.blit(platform.image, platform.rect)
 
