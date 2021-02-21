@@ -1,18 +1,18 @@
-# Setup
+# Snow Day
 
-Run this to set it up.
-
-
-# Poetry
-Read about python poetry for project administration: https://python-poetry.org/
-
-## Install Poetry
-https://python-poetry.org/docs/#installation
-
+This is a game where you shoot snowflakes with a potato gun.
 
 # Run the game
 
-1. After installing poetry to the system, cd to this directory and run `poetry install`.
+**You must have python installed.**
+
+
+## Windows
+On Windows, you can double click the `run.bat` file to install dependencies and run the game. Make sure you have python installed.
+
+## Mac / Linux
+1. Install [poetry](https://python-poetry.org/docs/#installation).
+1. Change directory to this folder and run `poetry install`.
 1. **Run the game** `poetry run python snowday/main.py`.
 
 

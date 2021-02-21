@@ -26,7 +26,7 @@ class Game:
     def __init__(self, **kwargs):
         """ Setup stuff in here """
         pygame.init()
-        caption = kwargs.get("caption", "Game")
+        caption = kwargs.get("caption", "Snow Day")
         pygame.display.set_caption(caption)
         self.clock = pygame.time.Clock()
         self.displaysurface = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
