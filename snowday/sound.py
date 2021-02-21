@@ -17,13 +17,13 @@ class Sound:
     pygame.mixer.music.set_volume(1.0)
 
     SHOOT_SFX = pygame.mixer.Sound(
-        pkg_resources.resource_filename("snowday", "assets/sfx/sfx1.mp3")
+        pkg_resources.resource_filename("snowday", "assets/sfx/sfx1.wav")
     )
     SHOOT_SFX.set_volume(0.7)
     HIT_SFX = pygame.mixer.Sound(
-        pkg_resources.resource_filename("snowday", "assets/sfx/sfx2.mp3")
+        pkg_resources.resource_filename("snowday", "assets/sfx/sfx2.wav")
     )
     MELT_SFX = pygame.mixer.Sound(
-        pkg_resources.resource_filename("snowday", "assets/sfx/sfx3.mp3")
+        pkg_resources.resource_filename("snowday", "assets/sfx/sfx3.wav")
     )
     MELT_SFX.set_volume(0.4)

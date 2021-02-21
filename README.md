@@ -2,6 +2,8 @@
 
 This is a game where you shoot snowflakes with a potato gun.
 
+![Screenshot](./screen.png?v=1)
+
 # Run the game
 
 **You must have python installed.**
@@ -19,6 +21,8 @@ On Windows, you can double click the `run.bat` file to install dependencies and 
 # Pygame
 
 This project uses pygame. Read about it here https://www.pygame.org/wiki/tutorials
+
+
 
 
 
