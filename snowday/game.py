@@ -4,32 +4,38 @@ This is the game class
 import sys
 import math
 import pygame
+import pygame.time
 from pygame.math import Vector2
 import pygame.sprite
 import pygame.mouse
+import pygame.font
 from snowday.bgm import Bgm
 from snowday.sprites.snowflake import Snowflake
 from snowday.sprites.potato_gun import PotatoGun
 
-DISPLAYSURF = pygame.display.set_mode((400, 300))
-
-
 
 class Game:
-    HEIGHT = 600
-    WIDTH = 800
+    HEIGHT = 700
+    WIDTH = 900
     ACC = 0.5
     FRIC = -0.12
     FPS = 22
+    SNOWFLAKE_FACTOR = 1000
 
     def __init__(self, **kwargs):
         """ Setup stuff in here """
         pygame.init()
-        caption = kwargs.get('caption', 'Game')
+        caption = kwargs.get("caption", "Game")
         pygame.display.set_caption(caption)
         self.clock = pygame.time.Clock()
         self.displaysurface = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
         self.bgm = Bgm()
+        self.level = 1
+        self.last_spawn_time = -1
+        self.score = {
+            "hits": 0,
+            "melts": 0,
+        }
 
     def get_gun_angle(self):
         """
@@ -37,7 +43,7 @@ class Game:
         """
         vec2 = pygame.mouse.get_pos()
         y = Game.HEIGHT - vec2[1]
-        x =  vec2[0] - Game.WIDTH / 2
+        x = vec2[0] - Game.WIDTH / 2
         angle = int(math.atan2(y, x) * 180 / math.pi) - 90
         return angle
 
@@ -54,18 +60,21 @@ class Game:
         platform.image = pygame.Surface([platform.rect.width, platform.rect.height])
         platform.image.fill((255, 255, 255))
 
-        snowflake = Snowflake()
-        snowflakes.add(snowflake)
-
         potato_gun = PotatoGun(Vector2(Game.WIDTH / 2, Game.HEIGHT))
 
         # Keep track of when the player finishes clicking a mouse button.
         click_start = False
 
+        # Keep scores on a score board.
+        scoreboard = pygame.Surface((300, 50))
+        scoreboard_rect = pygame.Rect(Game.WIDTH / 2, 0, Game.WIDTH / 2, 50)
+
+        myfont = pygame.font.SysFont("Console", 20)
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    print('Quitting')
+                    print("Quitting")
                     pygame.quit()
                     sys.exit()
 
@@ -74,11 +83,38 @@ class Game:
             # Draw the ground.
             self.displaysurface.blit(platform.image, platform.rect)
 
+            # Draw the scoreboard
+            scoreboard.fill((55, 55, 55))
+            self.displaysurface.blit(scoreboard, scoreboard_rect)
+            self.displaysurface.blit(
+                myfont.render(
+                    "Hits: %s" % self.score["hits"],
+                    True,
+                    "Orange",
+                ),
+                (scoreboard_rect.left, scoreboard_rect.top + 0),
+            )
+            self.displaysurface.blit(
+                myfont.render(
+                    "Melts: %s" % self.score["melts"],
+                    True,
+                    "Orange",
+                ),
+                (scoreboard_rect.left, scoreboard_rect.top + 30),
+            )
+
+            # Spawn snowflakes.
+            now = pygame.time.get_ticks()
+            if now - self.last_spawn_time > Game.SNOWFLAKE_FACTOR:
+                snowflakes.add(Snowflake())
+                self.last_spawn_time = now
+
             # Update the snowflakes sprite group causing them to fall.
             snowflakes.update()
             # Check if the snowflake hit the ground.
             for snowflake in pygame.sprite.spritecollide(platform, snowflakes, True):
-                print('melt')
+                print("melt")
+                self.score["melts"] += 1
                 snowflake = Snowflake()
                 snowflakes.add(snowflake)
             # Draw the snowflakes that didn't hit the ground.
@@ -100,8 +136,18 @@ class Game:
                     potato_gun.shoot_potato()
                     click_start = False
 
+            # Show the potatoes flying!
+            potato_gun.potatoes.update()
+            potato_gun.potatoes.draw(self.displaysurface)
+
+            # See if any potatoes fried some snowflakes.
+            # Note: there is a groupcollide() function that pygame provides, but
+            # I think it is overkill, and it has the potential to over measure in this game.
+            for potato in potato_gun.potatoes:
+                for snowflake in pygame.sprite.spritecollide(potato, snowflakes, True):
+                    print("shot that snowflake!")
+                    self.score["hits"] += 1
+
             # Update the display and clock.
             pygame.display.update()
             self.clock.tick(Game.FPS)
-
-
